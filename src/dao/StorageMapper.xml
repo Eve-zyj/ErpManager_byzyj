@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.StorageMapper">
+
+    <!--添加库存-->
+    <insert id="addStorage" parameterType="Storage">
+        INSERT INTO erp_db.storage
+            (warehouseNo,
+            commodityName,
+            supplier,
+            specifications,
+            specificationUnit,
+            number,
+            Unit,
+            price,
+            storagDate,
+            remarks
+            )
+            VALUES
+            (#{warehouseNo},
+            #{commodityName},
+            #{supplier},
+            #{specifications},
+            #{specificationUnit},
+            #{number},
+            #{Unit},
+            #{price},
+            #{storagDate},
+            #{remarks}
+            );
+    </insert>
+    <!--动态生成商品编号——查询商品列表的数量，下一个商品的编号为商品数量+1-->
+    <select id="getCount" resultType="int">
+        select count(1) from storage
+    </select>
+
+    <select id="getStorages" parameterType="tools.PageUtils" resultType="Storage">
+        SELECT 	warehouseNo,
+            commodityName,
+            supplier,
+            specifications,
+            specificationUnit,
+            number,
+            Unit,
+            price,
+            storagDate,
+            remarks
+            FROM
+            erp_db.storage
+            <where>
+            <if test="warehouseNo!=null  and warehouseNo !=''">
+                warehouseNo=#{warehouseNo}
+            </if>
+            </where>
+            <if test="pageSize!=null and pageSize !=''">
+                LIMIT #{firstData}, #{pageSize};
+            </if>
+    </select>
+
+    <select id="existName" parameterType="String" resultType="int">
+        SELECT COUNT(1) FROM STORAGE WHERE commodityName=#{commodityName}
+    </select>
+</mapper>
